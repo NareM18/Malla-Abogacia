@@ -1,205 +1,213 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Malla Curricular de Abogacía</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Curricular Interactiva</title>
   <style>
     body {
       font-family: sans-serif;
-      background-color: #fff1f7;
-      margin: 0;
+      background-color: #fce4ec;
       padding: 20px;
+      color: #333;
     }
 
     h1 {
       text-align: center;
-      color: #d81b60;
+      color: #ad1457;
+      margin-bottom: 30px;
     }
 
     .cuatrimestre {
-      background-color: #fce4ec;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 20px;
     }
 
-    .cuatrimestre h2 {
+    h2 {
       margin-top: 0;
-      color: #c2185b;
-      font-size: 1.2em;
-      border-bottom: 2px solid #f8bbd0;
-      padding-bottom: 5px;
+      color: #880e4f;
+    }
+
+    h3 {
+      margin: 10px 0 5px;
+      color: #6a1b9a;
+      font-size: 16px;
     }
 
     .materias {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 10px;
     }
 
     .materia {
       background-color: #f8bbd0;
-      color: #333;
       padding: 10px;
-      border-radius: 10px;
-      width: calc(50% - 10px);
-      box-sizing: border-box;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.3s ease;
+      flex: 1 1 calc(33% - 10px);
+      min-width: 180px;
+      text-align: center;
     }
 
-    .materia:hover {
-      background-color: #f48fb1;
-    }
-
-    .bloqueada {
-      background-color: #f3e5f5;
-      opacity: 0.6;
+    .materia.bloqueada {
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
-    .aprobada {
-      background-color: #c8e6c9 !important;
-      color: #2e7d32;
-      font-weight: bold;
+    .materia.promo {
+      background-color: #e1bee7; /* Morado claro */
+    }
+
+    .materia.regular {
+      background-color: #bbdefb; /* Azul pastel */
     }
 
     @media (max-width: 600px) {
       .materia {
-        width: 100%;
+        flex: 1 1 100%;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular de Abogacía</h1>
+  <h1>Malla Curricular Interactiva</h1>
   <div id="contenedor"></div>
 
   <script>
-const materias = [
-  // 1° AÑO
-  { id: 1, nombre: "Introducción al Derecho", c: "1A-1", correlativas: [] },
-  { id: 2, nombre: "Historia del Derecho", c: "1A-1", correlativas: [] },
-  { id: 3, nombre: "Sociología del Derecho", c: "1A-2", correlativas: [] },
-  { id: 4, nombre: "Derecho Político", c: "1A-2", correlativas: [] },
-  { id: 5, nombre: "Introducción a la Filosofía", c: "1A-2", correlativas: [] },
+    const materias = [
+      // 1° AÑO
+      { id: 1, nombre: "Introducción al Derecho", c: "1A-1", correlativas: [] },
+      { id: 2, nombre: "Historia del Derecho", c: "1A-1", correlativas: [] },
+      { id: 3, nombre: "Sociología del Derecho", c: "1A-1", correlativas: [] },
+      { id: 4, nombre: "Derecho Político", c: "1A-2", correlativas: [] },
+      { id: 5, nombre: "Introducción a la Filosofía", c: "1A-2", correlativas: [] },
+      { id: 6, nombre: "Economía Política", c: "1A-2", correlativas: [] },
+      { id: 7, nombre: "Expresión Oral y Escrita", c: "1A-2", correlativas: [] },
 
-  // 2° AÑO
-  { id: 6, nombre: "Economía Política", c: "2A-1", correlativas: [] },
-  { id: 7, nombre: "Expresión Oral y Escrita", c: "2A-1", correlativas: [] },
-  { id: 8, nombre: "Derecho Privado I", c: "2A-1", correlativas: [1,2] },
-  { id: 9, nombre: "Derecho Constitucional", c: "2A-2", correlativas: [1,4] },
-  { id:10, nombre: "Metodología de la Investigación", c: "2A-2", correlativas: [] },
+      // 2° AÑO
+      { id: 8, nombre: "Derecho Privado I", c: "2A-1", correlativas: [1,2] },
+      { id: 9, nombre: "Derecho Constitucional", c: "2A-1", correlativas: [1,4] },
+      { id:10, nombre: "Metodología de la Investigación", c: "2A-1", correlativas: [] },
+      { id:11, nombre: "Derecho Penal Parte Gral", c: "2A-2", correlativas: [8,9] },
+      { id:12, nombre: "Derecho Privado II", c: "2A-2", correlativas: [8] },
+      { id:13, nombre: "Derecho Público, Prov. y Mun.", c: "2A-2", correlativas: [9] },
+      { id:14, nombre: "Recursos Naturales", c: "2A-2", correlativas: [8,9] },
 
-  // 3° AÑO
-  { id:11, nombre: "Derecho Penal Parte Gral", c: "3A-1", correlativas: [8,9] },
-  { id:12, nombre: "Derecho Privado II", c: "3A-1", correlativas: [8] },
-  { id:13, nombre: "Derecho Público, Prov. y Mun.", c: "3A-2", correlativas: [9] },
-  { id:14, nombre: "Recursos Naturales", c: "3A-2", correlativas: [9] },
-  { id:15, nombre: "Derecho Privado III", c: "3A-2", correlativas: [8,9,12] },
+      // 3° AÑO
+      { id:15, nombre: "Derecho Privado III", c: "3A-1", correlativas: [8,9,12] },
+      { id:16, nombre: "Derecho Empresario", c: "3A-1", correlativas: [8,12] },
+      { id:17, nombre: "Procesal Civil y Comercial", c: "3A-1", correlativas: [8,9] },
+      { id:18, nombre: "Derecho Penal Parte Esp.", c: "3A-1", correlativas: [11] },
+      { id:19, nombre: "Personas Jurídicas", c: "3A-2", correlativas: [8,12,15,16] },
+      { id:20, nombre: "Trabajo y Seguridad Social", c: "3A-2", correlativas: [9,16,19] },
+      { id:21, nombre: "Filosofía del Derecho", c: "3A-2", correlativas: [5] },
+      { id:22, nombre: "Mediación y Mét. Alternativos", c: "3A-2", correlativas: [17] },
 
-  // 4° AÑO
-  { id:16, nombre: "Derecho Empresario", c: "4A-1", correlativas: [8,12] },
-  { id:17, nombre: "Procesal Civil y Comercial", c: "4A-1", correlativas: [8,12] },
-  { id:18, nombre: "Derecho Penal Parte Esp.", c: "4A-1", correlativas: [11] },
-  { id:19, nombre: "Personas Jurídicas", c: "4A-2", correlativas: [8,12,15,16] },
-  { id:20, nombre: "Trabajo y Seguridad Social", c: "4A-2", correlativas: [9,16,19] },
-  { id:21, nombre: "Filosofía del Derecho", c: "4A-2", correlativas: [5] },
+      // 4° AÑO
+      { id:23, nombre: "Derecho Privado IV", c: "4A-1", correlativas: [8,12,15] },
+      { id:24, nombre: "Derechos Humanos y Diversidad", c: "4A-1", correlativas: [9,17] },
+      { id:25, nombre: "Procesal Penal", c: "4A-1", correlativas: [11,18] },
+      { id:26, nombre: "Derecho Administrativo", c: "4A-1", correlativas: [8,12,15,23] },
+      { id:27, nombre: "Derecho de la Navegación", c: "4A-2", correlativas: [8,12,15,20] },
+      { id:28, nombre: "Consumidor y Usuario", c: "4A-2", correlativas: [17] },
+      { id:29, nombre: "Electiva I", c: "4A-2", correlativas: [] },
+      { id:30, nombre: "Taller de Práctica Profesional", c: "4A-2", correlativas: [17,25] },
 
-  // 5° AÑO
-  { id:22, nombre: "Mediación y Mét. Alternativos", c: "5A-1", correlativas: [17] },
-  { id:23, nombre: "Derecho Privado IV", c: "5A-1", correlativas: [8,12,15] },
-  { id:24, nombre: "Derechos Humanos y Diversidad", c: "5A-1", correlativas: [9] },
-  { id:25, nombre: "Procesal Penal", c: "5A-1", correlativas: [11,18] },
-  { id:26, nombre: "Derecho Administrativo", c: "5A-2", correlativas: [9,13] },
-  { id:27, nombre: "Derecho de la Navegación", c: "5A-2", correlativas: [8,12,15,20] },
-  { id:28, nombre: "Consumidor y Usuario", c: "5A-2", correlativas: [17] },
-  { id:29, nombre: "Electiva I", c: "5A-2", correlativas: [] },
-  { id:30, nombre: "Taller de Práctica Profesional", c: "5A-2", correlativas: [17,25] },
-  { id:31, nombre: "Derecho Privado V", c: "5A-2", correlativas: [8,12,15,23] },
-  { id:32, nombre: "Minero, Agrario y Energía", c: "5A-2", correlativas: [9] },
-  { id:33, nombre: "Internacional Público", c: "5A-2", correlativas: [9,26] },
-  { id:34, nombre: "Finanzas Públicas", c: "5A-2", correlativas: [6,24] },
-  { id:35, nombre: "Concursos y Quiebras", c: "5A-2", correlativas: [16,19,23] },
-  { id:36, nombre: "Electiva II", c: "5A-2", correlativas: [] },
-  { id:37, nombre: "Internacional Privado", c: "5A-2", correlativas: [19,31] },
-  { id:38, nombre: "Procesal Administrativo", c: "5A-2", correlativas: [17,26] },
-  { id:39, nombre: "Práctica Profesional Supervisada", c: "5A-2", correlativas: [30] },
-];
+      // 5° AÑO
+      { id:31, nombre: "Derecho Privado V", c: "5A-1", correlativas: [8,12,15,23] },
+      { id:32, nombre: "Minero, Agrario y Energía", c: "5A-1", correlativas: [14,23] },
+      { id:33, nombre: "Internacional Público", c: "5A-1", correlativas: [9,24] },
+      { id:34, nombre: "Finanzas Públicas", c: "5A-1", correlativas: [6,26] },
+      { id:35, nombre: "Concursos y Quiebras", c: "5A-1", correlativas: [16,19,20] },
+      { id:36, nombre: "Electiva II", c: "5A-2", correlativas: [] },
+      { id:37, nombre: "Internacional Privado", c: "5A-2", correlativas: [19,31] },
+      { id:38, nombre: "Procesal Administrativo", c: "5A-2", correlativas: [17,26] },
+      { id:39, nombre: "Práctica Profesional Supervisada", c: "5A-2", correlativas: [30] },
+    ];
 
-let estado = {};
+    let estado = {};
 
-function cargarEstado() {
-  const guardado = localStorage.getItem("estadoMaterias");
-  if (guardado) estado = JSON.parse(guardado);
-}
+    function cargarEstado() {
+      const guardado = localStorage.getItem("estadoMaterias");
+      if (guardado) estado = JSON.parse(guardado);
+    }
 
-function guardarEstado() {
-  localStorage.setItem("estadoMaterias", JSON.stringify(estado));
-}
+    function guardarEstado() {
+      localStorage.setItem("estadoMaterias", JSON.stringify(estado));
+    }
 
-function puedeDesbloquear(m) {
-  return m.correlativas.every(id => estado[id]);
-}
-function renderMaterias() {
-  const contenedor = document.getElementById("contenedor");
-  contenedor.innerHTML = "";
+    function puedeDesbloquear(m) {
+      return m.correlativas.every(id => estado[id] > 0);
+    }
 
-  const cuatrimestresUnicos = [...new Set(materias.map(m => m.c))].sort();
-
-  cuatrimestresUnicos.forEach(cuatrimestre => {
-    const bloque = document.createElement("div");
-    bloque.className = "cuatrimestre";
-
-    const titulo = document.createElement("h2");
-    titulo.innerText = formatoCuatrimestre(cuatrimestre);
-    bloque.appendChild(titulo);
-
-    const grupo = document.createElement("div");
-    grupo.className = "materias";
-
-    const delCuatrimestre = materias.filter(m => m.c === cuatrimestre);
-
-    delCuatrimestre.forEach(m => {
+    function crearCajaMateria(m) {
       const div = document.createElement("div");
       div.className = "materia";
 
-      const aprobada = estado[m.id];
+      const estadoActual = estado[m.id] || 0;
       const desbloqueada = puedeDesbloquear(m) || m.correlativas.length === 0;
 
-      if (aprobada) div.classList.add("aprobada");
-      else if (!desbloqueada) div.classList.add("bloqueada");
+      if (!desbloqueada) div.classList.add("bloqueada");
+      else {
+        if (estadoActual === 1) div.classList.add("promo");
+        else if (estadoActual === 2) div.classList.add("regular");
 
-      div.innerText = m.nombre;
-
-      if (desbloqueada) {
         div.onclick = () => {
-          estado[m.id] = !estado[m.id];
+          estado[m.id] = (estado[m.id] || 0) + 1;
+          if (estado[m.id] > 2) estado[m.id] = 0;
           guardarEstado();
           renderMaterias();
         };
       }
 
-      grupo.appendChild(div);
-    });
+      div.innerText = m.nombre;
+      return div;
+    }
 
-    bloque.appendChild(grupo);
-    contenedor.appendChild(bloque);
-  });
-}
+    function renderMaterias() {
+      const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = "";
 
-function formatoCuatrimestre(cod) {
-  const partes = cod.split("-");
-  const año = partes[0].replace("A", "° Año");
-  const cuatri = partes[1] === "1" ? "1er Cuatrimestre" : "2do Cuatrimestre";
-  return `${año} - ${cuatri}`;
-}
+      const anios = [...new Set(materias.map(m => m.c.split("A-")[0]))].sort((a, b) => a - b);
 
-cargarEstado();
-renderMaterias();
-</script>
+      anios.forEach(anio => {
+        const bloque = document.createElement("div");
+        bloque.className = "cuatrimestre";
+
+        const titulo = document.createElement("h2");
+        titulo.innerText = `${anio}° Año`;
+        bloque.appendChild(titulo);
+
+        // 1er Cuatrimestre
+        const t1 = document.createElement("h3");
+        t1.innerText = "📅 1er Cuatrimestre";
+        bloque.appendChild(t1);
+
+        const grupo1 = document.createElement("div");
+        grupo1.className = "materias";
+        materias.filter(m => m.c === `${anio}A-1`).forEach(m => grupo1.appendChild(crearCajaMateria(m)));
+        bloque.appendChild(grupo1);
+
+        // 2do Cuatrimestre
+        const t2 = document.createElement("h3");
+        t2.innerText = "📅 2do Cuatrimestre";
+        bloque.appendChild(t2);
+
+        const grupo2 = document.createElement("div");
+        grupo2.className = "materias";
+        materias.filter(m => m.c === `${anio}A-2`).forEach(m => grupo2.appendChild(crearCajaMateria(m)));
+        bloque.appendChild(grupo2);
+
+        contenedor.appendChild(bloque);
+      });
+    }
+
+    cargarEstado();
+    renderMaterias();
+  </script>
 </body>
 </html>
