@@ -46,4 +46,160 @@
       border-radius: 10px;
       width: calc(50% - 10px);
       box-sizing: border-box;
-      box-shadow: 0
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .materia:hover {
+      background-color: #f48fb1;
+    }
+
+    .bloqueada {
+      background-color: #f3e5f5;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .aprobada {
+      background-color: #c8e6c9 !important;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .materia {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular de Abogacía</h1>
+  <div id="contenedor"></div>
+
+  <script>
+const materias = [
+  // 1° AÑO
+  { id: 1, nombre: "Introducción al Derecho", c: "1A-1", correlativas: [] },
+  { id: 2, nombre: "Historia del Derecho", c: "1A-1", correlativas: [] },
+  { id: 3, nombre: "Sociología del Derecho", c: "1A-2", correlativas: [] },
+  { id: 4, nombre: "Derecho Político", c: "1A-2", correlativas: [] },
+  { id: 5, nombre: "Introducción a la Filosofía", c: "1A-2", correlativas: [] },
+
+  // 2° AÑO
+  { id: 6, nombre: "Economía Política", c: "2A-1", correlativas: [] },
+  { id: 7, nombre: "Expresión Oral y Escrita", c: "2A-1", correlativas: [] },
+  { id: 8, nombre: "Derecho Privado I", c: "2A-1", correlativas: [1,2] },
+  { id: 9, nombre: "Derecho Constitucional", c: "2A-2", correlativas: [1,4] },
+  { id:10, nombre: "Metodología de la Investigación", c: "2A-2", correlativas: [] },
+
+  // 3° AÑO
+  { id:11, nombre: "Derecho Penal Parte Gral", c: "3A-1", correlativas: [8,9] },
+  { id:12, nombre: "Derecho Privado II", c: "3A-1", correlativas: [8] },
+  { id:13, nombre: "Derecho Público, Prov. y Mun.", c: "3A-2", correlativas: [9] },
+  { id:14, nombre: "Recursos Naturales", c: "3A-2", correlativas: [9] },
+  { id:15, nombre: "Derecho Privado III", c: "3A-2", correlativas: [8,9,12] },
+
+  // 4° AÑO
+  { id:16, nombre: "Derecho Empresario", c: "4A-1", correlativas: [8,12] },
+  { id:17, nombre: "Procesal Civil y Comercial", c: "4A-1", correlativas: [8,12] },
+  { id:18, nombre: "Derecho Penal Parte Esp.", c: "4A-1", correlativas: [11] },
+  { id:19, nombre: "Personas Jurídicas", c: "4A-2", correlativas: [8,12,15,16] },
+  { id:20, nombre: "Trabajo y Seguridad Social", c: "4A-2", correlativas: [9,16,19] },
+  { id:21, nombre: "Filosofía del Derecho", c: "4A-2", correlativas: [5] },
+
+  // 5° AÑO
+  { id:22, nombre: "Mediación y Mét. Alternativos", c: "5A-1", correlativas: [17] },
+  { id:23, nombre: "Derecho Privado IV", c: "5A-1", correlativas: [8,12,15] },
+  { id:24, nombre: "Derechos Humanos y Diversidad", c: "5A-1", correlativas: [9] },
+  { id:25, nombre: "Procesal Penal", c: "5A-1", correlativas: [11,18] },
+  { id:26, nombre: "Derecho Administrativo", c: "5A-2", correlativas: [9,13] },
+  { id:27, nombre: "Derecho de la Navegación", c: "5A-2", correlativas: [8,12,15,20] },
+  { id:28, nombre: "Consumidor y Usuario", c: "5A-2", correlativas: [17] },
+  { id:29, nombre: "Electiva I", c: "5A-2", correlativas: [] },
+  { id:30, nombre: "Taller de Práctica Profesional", c: "5A-2", correlativas: [17,25] },
+  { id:31, nombre: "Derecho Privado V", c: "5A-2", correlativas: [8,12,15,23] },
+  { id:32, nombre: "Minero, Agrario y Energía", c: "5A-2", correlativas: [9] },
+  { id:33, nombre: "Internacional Público", c: "5A-2", correlativas: [9,26] },
+  { id:34, nombre: "Finanzas Públicas", c: "5A-2", correlativas: [6,24] },
+  { id:35, nombre: "Concursos y Quiebras", c: "5A-2", correlativas: [16,19,23] },
+  { id:36, nombre: "Electiva II", c: "5A-2", correlativas: [] },
+  { id:37, nombre: "Internacional Privado", c: "5A-2", correlativas: [19,31] },
+  { id:38, nombre: "Procesal Administrativo", c: "5A-2", correlativas: [17,26] },
+  { id:39, nombre: "Práctica Profesional Supervisada", c: "5A-2", correlativas: [30] },
+];
+
+let estado = {};
+
+function cargarEstado() {
+  const guardado = localStorage.getItem("estadoMaterias");
+  if (guardado) estado = JSON.parse(guardado);
+}
+
+function guardarEstado() {
+  localStorage.setItem("estadoMaterias", JSON.stringify(estado));
+}
+
+function puedeDesbloquear(m) {
+  return m.correlativas.every(id => estado[id]);
+}
+function renderMaterias() {
+  const contenedor = document.getElementById("contenedor");
+  contenedor.innerHTML = "";
+
+  const cuatrimestresUnicos = [...new Set(materias.map(m => m.c))].sort();
+
+  cuatrimestresUnicos.forEach(cuatrimestre => {
+    const bloque = document.createElement("div");
+    bloque.className = "cuatrimestre";
+
+    const titulo = document.createElement("h2");
+    titulo.innerText = formatoCuatrimestre(cuatrimestre);
+    bloque.appendChild(titulo);
+
+    const grupo = document.createElement("div");
+    grupo.className = "materias";
+
+    const delCuatrimestre = materias.filter(m => m.c === cuatrimestre);
+
+    delCuatrimestre.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "materia";
+
+      const aprobada = estado[m.id];
+      const desbloqueada = puedeDesbloquear(m) || m.correlativas.length === 0;
+
+      if (aprobada) div.classList.add("aprobada");
+      else if (!desbloqueada) div.classList.add("bloqueada");
+
+      div.innerText = m.nombre;
+
+      if (desbloqueada) {
+        div.onclick = () => {
+          estado[m.id] = !estado[m.id];
+          guardarEstado();
+          renderMaterias();
+        };
+      }
+
+      grupo.appendChild(div);
+    });
+
+    bloque.appendChild(grupo);
+    contenedor.appendChild(bloque);
+  });
+}
+
+function formatoCuatrimestre(cod) {
+  const partes = cod.split("-");
+  const año = partes[0].replace("A", "° Año");
+  const cuatri = partes[1] === "1" ? "1er Cuatrimestre" : "2do Cuatrimestre";
+  return `${año} - ${cuatri}`;
+}
+
+cargarEstado();
+renderMaterias();
+</script>
+</body>
+</html>
